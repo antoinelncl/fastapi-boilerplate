@@ -1,0 +1,1 @@
+Fastapi boilerplate for local development with JWT based authentication

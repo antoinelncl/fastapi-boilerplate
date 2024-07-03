@@ -1,0 +1,9 @@
+[flake8]
+; Minimal configuration for Flake8 to work with Black.
+max-line-length = 119
+max-complexity = 10
+extend-ignore = E203, E501
+type-checking-strict = true
+type-checking-pydantic-enabled = true
+type-checking-fastapi-dependency-support-enabled = true
+type-checking-sqlalchemy-enabled = true

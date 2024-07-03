@@ -1,0 +1,52 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python -m debugpy --listen 0.0.0.0:5678 -m uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+    env_file:
+      - .env
+    environment:
+      PYTHONDONTWRITEBYTECODE: 1
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "8000:8000"
+      - "5678:5678"
+    depends_on:
+      - db
+    volumes:
+      - ./src:/code/src
+
+  db:
+    image: postgres:13
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: fastapi
+      POSTGRES_USER: fastapi
+      POSTGRES_PASSWORD: fastapi
+    volumes:
+      - fastapi-data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    ports:
+      - 5433:5432
+
+  run-migrations:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: alembic -c alembic.ini upgrade head
+    environment:
+      PYTHONDONTWRITEBYTECODE: 1
+      PYTHONUNBUFFERED: 1
+    working_dir: /code
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - .:/code
+
+volumes:
+  fastapi-data:
